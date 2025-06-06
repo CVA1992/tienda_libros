@@ -1,0 +1,7 @@
+
+    {% block content %}
+    {% for libro in libros %}
+    <h3>{{libro.titulo}}</h3> <br>
+    <img src="{{libro.imagen}}">
+    {% endfor%}
+    {% endblock%}

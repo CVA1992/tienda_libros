@@ -7,6 +7,11 @@ def detalle_libro(request, libro_id):
     reseñas = libro.reseñas.all()  # Obtiene todas las reseñas del libro
     return render(request, 'libros/detalle.html', {'libro': libro, 'reseñas': reseñas})
 
+
+def lista_libros(request):
+    libros = Libro.objects.all()
+    return render(request, 'libros/lista.html', {'libros': libros})
+
 @login_required
 def agregar_reseña(request, libro_id):
     if request.method == 'POST':
