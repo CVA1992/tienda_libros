@@ -1,0 +1,26 @@
+
+
+{% block content %}
+<h2>Resultados para: "{{ query }}"</h2>
+
+<form method="get" action="{% url 'buscar_libros' %}">
+    <input type="text" name="q" placeholder="Buscar libros..." value="{{ query }}">
+    <button type="submit">Buscar</button>
+</form>
+
+{% if libros %}
+    <ul>
+    {% for libro in libros %}
+        <li>
+            <h3>{{ libro.titulo }}</h3>
+            <p>Autor: {{ libro.autor.nombre }}</p>
+            <p>{{ libro.descripcion|truncatechars:100 }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    {% if query %}
+        <p>No se encontraron resultados.</p>
+    {% endif %}
+{% endif %}
+{% endblock %}

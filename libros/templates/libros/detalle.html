@@ -1,0 +1,12 @@
+{% extends 'libros/base.html' %}
+<h1> {{libro.titulo}}</h1>
+<div>
+    <p>{{libro.descripcion}}</p>
+    <img src="{{libro.imagen}}">
+    <div class="search-bar">
+    <form method="get" action="{% url 'buscar_libros' %}">
+        <input type="text" name="q" placeholder="Buscar libros...">
+        <button type="submit">🔍</button>
+    </form>
+</div>
+</div>

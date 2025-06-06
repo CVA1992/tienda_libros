@@ -2,11 +2,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% include "includes/head.html" %}
+    {% include "libros/includes/head.html" %}
 </head>
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
 
-    {% include "includes/header.html" %}
+    {% include "libros/includes/header.html" %}
 <div class="search-bar">
     <form method="get" action="{% url 'buscar_libros' %}">
         <input type="text" name="q" placeholder="Buscar libros...">
@@ -17,8 +17,8 @@
     <!-- Aquí va el contenido específico de cada página -->
     {% endblock %}
 
-    {% include "includes/footer.html" %}
-    {% include "includes/scripts.html" %}
+    {% include "libros/includes/footer.html" %}
+    {% include "libros/includes/scripts.html" %}
 </body>
 </html>
 v

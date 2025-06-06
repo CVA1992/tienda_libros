@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Libro, Reseña
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 def detalle_libro(request, libro_id):
     libro = get_object_or_404(Libro, pk=libro_id)
@@ -11,6 +12,23 @@ def detalle_libro(request, libro_id):
 def lista_libros(request):
     libros = Libro.objects.all()
     return render(request, 'libros/lista.html', {'libros': libros})
+def buscar_libros(request):
+    query = request.GET.get('q', '')  # Obtiene el parámetro de búsqueda (ej: ?q=harry+potter)
+    
+    if query:
+        # Búsqueda en título, autor o descripción (no sensible a mayúsculas)
+        libros = Libro.objects.filter(
+            Q(titulo__icontains=query) | 
+            Q(autor__nombre__icontains=query) |
+            Q(descripcion__icontains=query)
+        ).distinct()
+    else:
+        libros = Libro.objects.none()  # Si no hay query, devuelve lista vacía
+    
+    return render(request, 'libros/resultados_busqueda.html', {
+        'libros': libros,
+        'query': query
+    })
 
 @login_required
 def agregar_reseña(request, libro_id):
