@@ -2,6 +2,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('libro/<int:libro_id>/', views.detalle_libro, name='detalle_libro'),
-    path('libro/<int:libro_id>/reseña/', views.agregar_reseña, name='agregar_reseña'),
+    # Públicas
+    path('lista_libros', views.lista_libros, name='lista_libros'),                  # Lista de libros (inicio)
+    path('libro/<int:libro_id>/', views.detalle_libro, name='detalle_libro'),  # Detalle de un libro,        # Búsqueda
+    
+    # Autenticadas
+    path('reseña/agregar/<int:libro_id>/', views.agregar_reseña, name='agregar_reseña'),  # Solo usuarios logueados
 ]
