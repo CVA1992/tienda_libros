@@ -1,26 +1,30 @@
-
-
+{% extends 'base/base.html' %}
 {% block content %}
-<h2>Resultados para: "{{ query }}"</h2>
+<div class="container mt-3">
+    <form method="get" action="{% url 'buscar_libros' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" 
+                   placeholder="Buscar libros..." value="{{ query }}">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </form>
 
-<form method="get" action="{% url 'buscar_libros' %}">
-    <input type="text" name="q" placeholder="Buscar libros..." value="{{ query }}">
-    <button type="submit">Buscar</button>
-</form>
+    <h2 class="mb-3">Resultados para: "{{ query }}"</h2>
 
-{% if libros %}
-    <ul>
-    {% for libro in libros %}
-        <li>
-            <h3>{{ libro.titulo }}</h3>
-            <p>Autor: {{ libro.autor.nombre }}</p>
-            <p>{{ libro.descripcion|truncatechars:100 }}</p>
-        </li>
-    {% endfor %}
-    </ul>
-{% else %}
-    {% if query %}
-        <p>No se encontraron resultados.</p>
+    {% if libros %}
+    <div class="list-group">
+        {% for libro in libros %}
+        <a href="{% url 'detalle_libro' libro.id %}" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ libro.titulo }}</h5>
+                <small>Autor: {{ libro.autor.nombre }}</small>
+            </div>
+            <p class="mb-1">{{ libro.descripcion|truncatechars:100 }}</p>
+        </a>
+        {% endfor %}
+    </div>
+    {% elif query %}
+    <div class="alert alert-info">No se encontraron resultados.</div>
     {% endif %}
-{% endif %}
+</div>
 {% endblock %}

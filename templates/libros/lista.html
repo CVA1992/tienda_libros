@@ -1,7 +1,20 @@
 {% extends "base/base.html" %}
-    {% block content %}
-    {% for libro in libros %}
-    <h3>{{libro.titulo}}</h3> <br>
-    <img src="{{libro.imagen}}">
-    {% endfor%}
-    {% endblock%}
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% for libro in libros %}
+        <div class="col-md-4 text-center mb-4">
+            <a href="{% url 'detalle_libro' libro.id %}" class="text-decoration-none text-dark">
+                <img src="{{ libro.imagen }}" class="img-fluid rounded mb-2" alt="{{ libro.titulo }}">
+                <h3 class="h5">{{ libro.titulo }}</h3>
+            </a>
+        </div>
+        
+        {% if forloop.counter|divisibleby:3 %}
+    </div>
+    <div class="row">
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,45 @@
-{% extends 'libros/base.html' %}
-<h1> {{libro.titulo}}</h1>
-<div>
-    <p>{{libro.descripcion}}</p>
-    <img src="{{libro.imagen}}">
-    
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Columna para la imagen -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <img src="{{ libro.imagen }}" class="card-img-top img-fluid" alt="{{ libro.titulo }}">
+            </div>
+        </div>
+        
+        <!-- Columna para la información del libro -->
+        <div class="col-md-6">
+            <h1 class="mb-3">{{ libro.titulo }}</h1>
+            
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Descripción</h5>
+                    <p class="card-text">{{ libro.descripcion }}</p>
+                </div>
+            </div>
+            
+            <!-- Puedes añadir más detalles del libro aquí -->
+            {% if libro.autor %}
+            <div class="mb-3">
+                <h5>Autor:</h5>
+                <p>{{ libro.autor }}</p>
+            </div>
+            {% endif %}
+            
+            {% if libro.fecha_publicacion %}
+            <div class="mb-3">
+                <h5>Fecha de publicación:</h5>
+                <p>{{ libro.fecha_publicacion }}</p>
+            </div>
+            {% endif %}
+            
+            <!-- Botón de volver atrás -->
+            <a href="javascript:history.back()" class="btn btn-primary mt-3">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
 </div>
+{% endblock %}

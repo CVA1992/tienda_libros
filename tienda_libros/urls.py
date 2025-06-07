@@ -17,10 +17,12 @@ Including another URLconf
 # mi_sitio_libros/urls.py (URLs principales del proyecto)
 from django.contrib import admin
 from django.urls import path, include
+from libros.views import inicio
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('libros.urls')),          # Página de inicio (catálogo)
     path('usuarios/', include('usuarios.urls')),
     path('ventas/', include('ventas.urls')),
+    path('',inicio, name='inicio'),
 ]
