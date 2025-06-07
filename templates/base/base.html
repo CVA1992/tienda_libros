@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% include "base/includes/head.html" %}  <!-- Ruta correcta -->
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    {% include "base/includes/header.html" %}  <!-- Ruta correcta -->
+    
+    {% block content %}{% endblock %}
+    
+    {% include "base/includes/footer.html" %}  <!-- Ruta correcta -->
+    {% include "base/includes/scripts.html" %} <!-- Ruta correcta -->
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

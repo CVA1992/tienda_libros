@@ -7,7 +7,12 @@
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
 
     {% include "includes/header.html" %}
-
+<div class="search-bar">
+    <form method="get" action="{% url 'buscar_libros' %}">
+        <input type="text" name="q" placeholder="Buscar libros...">
+        <button type="submit">🔍</button>
+    </form>
+</div>
     {% block content %}
     <!-- Aquí va el contenido específico de cada página -->
     {% endblock %}
