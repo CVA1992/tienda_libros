@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # Públicas
@@ -10,4 +12,5 @@ urlpatterns = [
     
     # Autenticadas
     path('reseña/agregar/<int:libro_id>/', views.agregar_reseña, name='agregar_reseña'),  # Solo usuarios logueados
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
+  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
