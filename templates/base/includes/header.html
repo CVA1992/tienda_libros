@@ -25,11 +25,18 @@
 					</div>
 					<div class="col-md-6">
 						<div class="right-element">
-							<a href="#" class="user-account for-buy"><i
-									class="icon icon-user"></i><span>Account</span></a>
-							<a href="#" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0
-									$)</span></a>
-
+							
+								{% if user.is_authenticated %}
+									<!-- Contenido SOLO para usuarios registrados -->
+									<p>Bienvenido, {{ user.username }}!</p>
+									<a href="#">Cerrar sesión</a>
+									<a href="#">Ver carrito</a>
+								{% else %}
+									<!-- Contenido SOLO para invitados (no registrados) -->
+									<p>Por favor, inicia sesión o regístrate.</p>
+									<a href="{% url 'login'%}">Iniciar sesión</a>
+									<a href="{%url 'registro'%}">Registrarse</a>
+								{% endif %}				
 							<div class="action-menu">
 
 								<div class="search-bar">
@@ -52,55 +59,35 @@
 
 		<header id="header">
 			<div class="container-fluid">
-				<div class="row">
-
-					<div class="col-md-2">
-						<div class="main-logo">
-							<a href="index.html"><img src="images/main-logo.png" alt="logo"></a>
-						</div>
-
-					</div>
-
+				<div class="row">	
 					<div class="col-md-10">
+						<nav id="navbar" class="navbar navbar-expand-lg d-flex align-items-center">
+    <!-- Menú principal -->
+    <div class="main-menu stellarnav flex-grow-1">
+        <ul class="menu-list d-flex mb-0">  <!-- d-flex para alinear ítems -->
+            <li class="nav-item active"><a href="{% url 'inicio'%}" class="nav-link">Inicio</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Menú Principal</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'lista_libros' %}">Inicio</a></li>
+                    <li><a class="dropdown-item" href="#">Reporte Ventas</a></li>
+                    <li><a class="dropdown-item" href="#">Admin</a></li>
+                </ul>
+            </li>
+            <li class="nav-item"><a href="#featured-books" class="nav-link">Ofertas</a></li>
+			<li class="nav-item"><a href="#featured-books" class="nav-link">Mas VEndidos</a></li>
+			<li class="nav-item"><a href="#featured-books" class="nav-link">Populares</a></li>
+        </ul>
+    </div>
 
-						<nav id="navbar">
-							<div class="main-menu stellarnav">
-								<ul class="menu-list">
-									<li class="menu-item active"><a href="#home">Inicio</a></li>
-									<li class="menu-item has-sub">
-										<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
-            Menú Principal
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <li><a class="dropdown-item" href="{% url 'lista_libros' %}">Inicio</a></li>
-            <li><a class="dropdown-item" href="#">Reporte Ventas</a></li>
-            <li><a class="dropdown-item" href="#">Admin</a></li>
-            <li><a class="dropdown-item" href="#">Blog</a></li>
-          </ul>
-
-									</li>
-									<li class="menu-item"><a href="#featured-books" class="nav-link">Ofertas</a></li>
-									<li class="menu-item"><a href="#popular-books" class="nav-link">Mas Vendidos</a></li>
-									<li class="menu-item"><a href="#special-offer" class="nav-link">Quienes Somos</a></li>
-									<li class="menu-item"><a href="#latest-blog" class="nav-link">Registro</a></li>
-									
-								</ul>
-								
-								
-								<div class="hamburger">
-									<span class="bar"></span>
-									<span class="bar"></span>
-									<span class="bar"></span>
-								</div>
-
-							</div>
-							<div class="search-bar">
-    									<form method="get" action="{% url 'buscar_libros' %}">
-        										<input type="text" name="q" placeholder="Buscar libros...">
-        										<button type="submit">Buscar</button>
-    									</form>
-								</div>
-						</nav>
+    <!-- Barra de búsqueda (alineada a la derecha) -->
+    <div class="search-bar ms-auto">  <!-- ms-auto = margin-left: auto -->
+        <form class="d-flex" method="get" action="{% url 'buscar_libros' %}">
+            <input class="form-control me-2" type="search" name="q" placeholder="Buscar libros...">
+            <button class="btn btn-outline-primary" type="submit">Buscar</button>
+        </form>
+    </div>
+</nav>
 
 					</div>
 

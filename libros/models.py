@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from usuarios.models import PerfilUsuario
 
 class Autor(models.Model):
     nombre = models.CharField(max_length=100)
@@ -21,7 +22,7 @@ class Libro(models.Model):
 
 class Reseña(models.Model):
     libro = models.ForeignKey(Libro, on_delete=models.CASCADE, related_name='reseñas')
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)  # User por defecto
+    usuario = models.ForeignKey(PerfilUsuario, on_delete=models.CASCADE)  # User por defecto
     comentario = models.TextField()
     puntuacion = models.PositiveIntegerField(choices=[(1, '★'), (2, '★★'), (3, '★★★'), (4, '★★★★'), (5, '★★★★★')])
     fecha = models.DateTimeField(auto_now_add=True)

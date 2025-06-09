@@ -1,0 +1,9 @@
+{%extends 'base/base.html'%}
+{%block content%}
+<h2> pedidos </h2>
+{%for pedido in pedidos%}
+<p> {{pedido.usuario}} </p>
+<p> {{pedido.total}} </p>
+
+{%endfor%}
+{%endblock%}

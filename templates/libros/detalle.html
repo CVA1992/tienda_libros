@@ -40,6 +40,18 @@
                 <i class="bi bi-arrow-left"></i> Volver
             </a>
         </div>
+        <div class="col">
+              <ul>
+            {% for resen in reseñas  %}
+                <li> {{resen.comentario}}<br>
+                    {{resen.usuario}}
+
+                </li>
+
+            
+            {% endfor %}
+            </ul>
+        </div>
     </div>
 </div>
 {% endblock %}
