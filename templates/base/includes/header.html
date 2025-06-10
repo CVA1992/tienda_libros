@@ -5,49 +5,43 @@
 		<div class="top-content">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-md-6">
-						<div class="social-links">
-							<ul>
-								<li>
-									<a href="#"><i class="icon icon-facebook"></i></a>
-								</li>
-								<li>
-									<a href="#"><i class="icon icon-twitter"></i></a>
-								</li>
-								<li>
-									<a href="#"><i class="icon icon-youtube-play"></i></a>
-								</li>
-								<li>
-									<a href="#"><i class="icon icon-behance-square"></i></a>
-								</li>
-							</ul>
-						</div><!--social-links-->
-					</div>
+					
 					<div class="col-md-6">
 						<div class="right-element">
 							
 								{% if user.is_authenticated %}
-									<!-- Contenido SOLO para usuarios registrados -->
-									<p>Bienvenido, {{ user.username }}!</p>
-									<a href="#">Cerrar sesión</a>
-									<a href="#">Ver carrito</a>
-								{% else %}
-									<!-- Contenido SOLO para invitados (no registrados) -->
-									<p>Por favor, inicia sesión o regístrate.</p>
-									<a href="{% url 'login'%}">Iniciar sesión</a>
-									<a href="{%url 'registro'%}">Registrarse</a>
-								{% endif %}				
+    <!-- Contenido para usuarios logueados -->
+    <div class="d-flex  gap-3">
+        <span class="text-white">Bienvenido, <strong>{{ user.username }}</strong>!</span>
+        
+        <!-- Botón de carrito -->
+        <a href="#" class="btn btn-sm btn-outline-light">
+            <i class="fas fa-shopping-cart"></i> Carrito
+        </a>
+        
+        <!-- Formulario de logout (método POST recomendado) -->
+        <form action="{% url 'logout' %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+            </button>
+        </form>
+    </div>
+{% else %}
+    <!-- Contenido para invitados -->
+    <div class="d-flex  gap-3">
+        <span class="text-white">Por favor, inicia sesión</span>
+        <a href="{% url 'login' %}" class="btn btn-sm btn-primary">
+            <i class="fas fa-user-plus"></i> Iniciar sesión
+        </a>
+        <a href="{% url 'registro' %}" class="btn btn-sm btn-primary">
+            <i class="fas fa-user-plus"></i> Registrarse
+        </a>
+    </div>
+{% endif %}			
 							<div class="action-menu">
 
-								<div class="search-bar">
-									<a href="#" class="search-button search-toggle" data-selector="#header-wrap">
-										<i class="icon icon-search"></i>
-									</a>
-									<form role="search" method="get" class="search-box">
-										<input class="search-field text search-input" placeholder="Search"
-											type="search">
-									</form>
-								</div>
+								
 							</div>
 
 						</div><!--top-right-->
@@ -60,37 +54,59 @@
 		<header id="header">
 			<div class="container-fluid">
 				<div class="row">	
-					<div class="col-md-10">
-						<nav id="navbar" class="navbar navbar-expand-lg d-flex align-items-center">
-    <!-- Menú principal -->
-    <div class="main-menu stellarnav flex-grow-1">
-        <ul class="menu-list d-flex mb-0">  <!-- d-flex para alinear ítems -->
-            <li class="nav-item active"><a href="{% url 'inicio'%}" class="nav-link">Inicio</a></li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Menú Principal</a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{% url 'lista_libros' %}">Inicio</a></li>
-                    <li><a class="dropdown-item" href="#">Reporte Ventas</a></li>
-                    <li><a class="dropdown-item" href="#">Admin</a></li>
-                </ul>
-            </li>
-            <li class="nav-item"><a href="#featured-books" class="nav-link">Ofertas</a></li>
-			<li class="nav-item"><a href="#featured-books" class="nav-link">Mas VEndidos</a></li>
-			<li class="nav-item"><a href="#featured-books" class="nav-link">Populares</a></li>
-        </ul>
-    </div>
+					<div class="col-md-12">
+						<nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Menú principal -->
+        <div class="main-menu stellarnav w-100">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex align-items-center w-100">
+                <li class="nav-item active me-3">
+                    <a href="{% url 'inicio'%}" class="nav-link">Inicio</a>
+                </li>
+				{% if user.is_authenticated %}
 
-    <!-- Barra de búsqueda (alineada a la derecha) -->
-    <div class="search-bar ms-auto">  <!-- ms-auto = margin-left: auto -->
-        <form class="d-flex" method="get" action="{% url 'buscar_libros' %}">
-            <input class="form-control me-2" type="search" name="q" placeholder="Buscar libros...">
-            <button class="btn btn-outline-primary" type="submit">Buscar</button>
-        </form>
+                <li class="nav-item dropdown me-3">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Menu Administador
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Perfil</a></li>
+                        <li><a class="dropdown-item" href="{% url 'lista_pedidos'%}">Reporte Pedidos</a></li>
+                        <li><a class="dropdown-item" href="{% url 'admin:index'%}">Admin</a></li>
+                    </ul>
+                </li>
+				{%endif%}
+
+				<li class="nav-item me-3">
+                    <a href="{% url 'lista_libros' %}" class="nav-link">Libros</a>
+                </li>
+                <li class="nav-item me-3">
+                    <a href="{% url 'lista_libros' %}" class="nav-link">Ofertas</a>
+                </li>
+                <li class="nav-item me-3">
+                    <a href="{% url 'lista_libros' %}"class="nav-link">Más Vendidos</a>
+                </li>
+                <li class="nav-item me-3">
+                    <a href="{% url 'lista_libros' %}" class="nav-link">Populares</a>
+                </li>
+                <!-- Elemento alineado a la derecha (ejemplo) -->
+                <li class="nav-item ms-auto">
+                    <div class="search-bar ms-auto">  <!-- ms-auto = margin-left: auto -->
+								<form class="d-flex" method="get" action="{% url 'buscar_libros' %}">
+									<input class="form-control me-2" type="search" name="q" placeholder="Buscar libros...">
+									<button class="btn btn-outline-primary" type="submit">Buscar</button>
+								</form>
+								</div>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
 
 					</div>
-
+					<div class="col-md-2">
+						
+					</div>
 				</div>
 			</div>
 		</header>

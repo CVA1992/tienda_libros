@@ -39,6 +39,7 @@ def buscar_libros(request):
         'query': query
     })
 
+
 @login_required
 def agregar_reseña(request, libro_id):
     if request.method == 'POST':

@@ -1,0 +1,74 @@
+{% extends "base/base.html" %}
+
+	<section id="popular-books" class="bookshelf py-5 my-5">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+
+					<div class="section-header align-center">
+						<div class="title">
+							<span>Some quality items</span>
+						</div>
+						<h2 class="section-title">Popular Books</h2>
+					</div>
+
+					<ul class="tabs">
+						<li data-tab-target="#all-genre" class="active tab">All Genre</li>
+						<li data-tab-target="#business" class="tab">Business</li>
+						<li data-tab-target="#technology" class="tab">Technology</li>
+						<li data-tab-target="#romantic" class="tab">Romantic</li>
+						<li data-tab-target="#adventure" class="tab">Adventure</li>
+						<li data-tab-target="#fictional" class="tab">Fictional</li>
+					</ul>
+
+					<div class="tab-content">
+    
+						<div id="all-genre" data-tab-content class="active">
+        					<!-- Primera fila -->
+							<div class="row mb-4">
+								{% for libro in libros_filtrados|slice:":4" %}
+								<div class="col-md-3 col-6 mb-4">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{{ libro.imagen }}" alt="{{ libro.titulo }}" class="product-item img-fluid">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">
+												Añadir al carrito
+											</button>
+										</figure>
+										<figcaption>
+											<h3>{{ libro.titulo }}</h3>
+											<span>{{ libro.autor }}</span>
+											<div class="item-price">$ {{ libro.precio|floatformat:2 }}</div>
+										</figcaption>
+									</div>
+								</div>
+								{% endfor %}
+							</div>
+
+					<!-- Segunda fila -->
+							<div class="row">
+								{% for libro in libros_filtrados|slice:"4:8" %}
+								<div class="col-md-3 col-6 mb-4">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{{ libro.imagen }}" alt="{{ libro.titulo }}" class="product-item img-fluid">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">
+												Añadir al carrito
+											</button>
+										</figure>
+										<figcaption>
+											<h3>{{ libro.titulo }}</h3>
+											<span>{{ libro.autor }}</span>
+											<div class="item-price">$ {{ libro.precio|floatformat:2 }}</div>
+										</figcaption>
+									</div>
+								</div>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+				</div><!--inner-tabs-->
+
+			</div>
+		</div>
+	</section>
