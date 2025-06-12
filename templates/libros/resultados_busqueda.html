@@ -1,7 +1,7 @@
 {% extends 'base/base.html' %}
 {% block content %}
 <div class="container mt-3">
-    <form method="get" action="{% url 'buscar_libros' %}" class="mb-4">
+    <form method="get" action="{% url 'libros:buscar_libros' %}" class="mb-4">
         <div class="input-group">
             <input type="text" name="q" class="form-control" 
                    placeholder="Buscar libros..." value="{{ query }}">
@@ -14,7 +14,7 @@
     {% if libros %}
     <div class="list-group">
         {% for libro in libros %}
-        <a href="{% url 'detalle_libro' libro.id %}" class="list-group-item list-group-item-action">
+        <a href="{% url 'libros:detalle_libro' libro.id %}" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">{{ libro.titulo }}</h5>
                 <small>Autor: {{ libro.autor.nombre }}</small>

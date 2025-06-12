@@ -15,6 +15,7 @@ class Libro(models.Model):
     precio = models.DecimalField(max_digits=6, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)
     descripcion = models.TextField()
+    categoria = models.CharField(max_length=50, default="generico")
     imagen = models.ImageField(upload_to='libros/', blank=True)
 
     def __str__(self):

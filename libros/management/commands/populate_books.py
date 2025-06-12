@@ -13,7 +13,8 @@ def import_books(query="django"):
         Libro.objects.create(
             titulo=book_info['title'],
             autor=autor,
-            precio=19.99,  # Precio por defecto
+            precio=19.99,
+            categoria=book_info.get('categories', ['General'])[0],
             descripcion=book_info.get('description', 'Sin descripción'),
             imagen=book_info.get('imageLinks', {}).get('thumbnail', '')
         )

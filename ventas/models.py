@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-
 from libros.models import Libro
 from usuarios.models import PerfilUsuario
 
@@ -28,23 +27,12 @@ class DetallePedido(models.Model):
     def __str__(self):
         return f"{self.cantidad}x {self.libro.titulo}"
 
-# Historial (puede ser una vista o un modelo separado)
-class Historial(models.Model):
-    usuario = models.ForeignKey(PerfilUsuario, on_delete=models.CASCADE)
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
-    fecha_consulta = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name_plural = "Historial"  # Para que no muestre "Historials" en el admin
-
 class Carrito(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE) 
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+
+class ItemCarrito(models.Model):
+    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE)  
+    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)   
     cantidad = models.PositiveIntegerField(default=1)
-    fecha_agregado = models.DateTimeField(auto_now_add=True)
-
-    def subtotal(self):
-        return self.libro.precio * self.cantidad
-
-    def __str__(self):
-        return f"{self.cantidad}x {self.libro.titulo} (${self.subtotal()})"

@@ -22,8 +22,10 @@ from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('libros.urls')),          # Página de inicio (catálogo)
+    
+    path('libros/', include('libros.urls', namespace='libros')),        
     path('usuarios/', include('usuarios.urls')),
+    
     path('ventas/', include('ventas.urls')),
     path('',inicio, name='inicio'),
     path('logout/', LogoutView.as_view(next_page='inicio'), name='logout'),
