@@ -1,22 +1,19 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Pedido, Carrito, ItemCarrito
+from .models import Carrito, ItemCarrito, Pedido, DetallePedido
 from libros.models import Libro
+from usuarios.models import PerfilUsuario
 import random
+from decimal import Decimal
+from django.db import transaction
+
 
 def lista_pedidos(request):
     pedidos = Pedido.objects.all()
     return render(request,'ventas/lista_pedidos.html', {'pedidos': pedidos})
-def detalle_pedido(request, pedido_id):
-    pedido = Pedido.objects.get(id=pedido_id)
-    libros = pedido.libros.all()  # Obtiene todos los libros del pedido
-    
-    return render(request, 'ventas/detalle_pedido.html', {
-        'pedido': pedido,
-        'libros': libros,
-    })
-@login_required
+
+
 @login_required
 def ver_carrito(request):
     carrito, creado = Carrito.objects.get_or_create(usuario=request.user)
@@ -75,3 +72,31 @@ def actualizar_cantidad(request, item_id):
             messages.success(request, 'Item eliminado del carrito')
     
     return redirect('ventas:ver_carrito')
+def proceder_pago(request):
+    carrito=Carrito.objects.get(usuario=request.user)
+    items_carrito = carrito.itemcarrito_set.all().select_related('libro')
+    total = sum(item.libro.precio * item.cantidad for item in items_carrito)
+    pedido = Pedido.objects.create(
+        usuario=request.user,
+        total=total,
+        estado='pendiente'
+    )
+    for item in items_carrito:
+        DetallePedido.objects.create(
+            pedido=pedido,
+            libro=item.libro,
+            cantidad=item.cantidad,
+            precio_unitario=item.libro.precio,
+    )
+    items_carrito.delete()
+    messages.success(request, "¡Pedido añadido correctamente!")
+    return redirect('inicio')
+# views.py
+from django.shortcuts import get_object_or_404
+
+def detalle_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id, usuario=request.user)  # Filtra por usuario para seguridad
+    items_pedido = pedido.items.all().select_related('libro')  # Accede a los items mediante related_name
+    
+   
+    return render(request, 'ventas/detalle_pedido.html', {'pedido': pedido, 'items_pedido':items_pedido})

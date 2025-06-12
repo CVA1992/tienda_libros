@@ -1,14 +1,37 @@
-{%extends 'base/base.html'%}
-{%block content%}
-<h1>Pedido #{{ pedido.id }}</h1>
-<p>Estado: {{ pedido.get_estado_display }}</p>
+{% extends 'base/base.html' %}
 
-<h3>Libros en este pedido:</h3>
-<ul>
-    {% for libro in libros %}
-    <li>{{ libro.titulo }} - ${{ libro.precio }}</li>
-    {% empty %}
-    <li>No hay libros en este pedido.</li>
-    {% endfor %}
-</ul>
-{%endblock%}
+{% block content %}
+<div class="container">
+    <h2>Detalle del Pedido #{{ pedido.id }}</h2>
+    <p>Fecha: {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+    <p>Estado: {{ pedido.estado }}</p>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Libro</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items_pedido %}
+            <tr>
+                <td>{{ item.libro.titulo }}<img src="{{item.libro.imagen}}"></td>
+                
+                <td>{{ item.cantidad }}</td>
+                <td>${{ item.precio_unitario }}</td>
+                <td>${{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="table-active">
+                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                <td><strong>${{ pedido.total }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <a href="{% url 'ventas:lista_pedidos' %}" class="btn btn-secondary">Volver a mis pedidos</a>
+</div>
+{% endblock %}
