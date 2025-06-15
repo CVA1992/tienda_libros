@@ -1,113 +1,97 @@
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
-
 	<div id="header-wrap">
-
 		<div class="top-content">
 			<div class="container-fluid">
 				<div class="row">
-					
 					<div class="col-md-6">
 						<div class="right-element">
-							
 						{% if user.is_authenticated %}
 						<!-- Contenido para usuarios logueados -->
-								<div class="d-flex">
-									<span class="text-dark">Bienvenido, <strong>{{ user.username }}</strong>!</span>
-									
-									<!-- Botón de carrito -->
-									<a href="{% url 'ventas:ver_carrito'%}" class="btn btn-sm btn-primary">
-										<i class="fas fa-shopping-cart"></i> Carrito
-									</a>
-									
-									<!-- Formulario de logout (método POST recomendado) -->
-									<form action="{% url 'logout' %}" method="post" class="d-inline">
-										{% csrf_token %}
-										<button type="submit" class="btn btn-sm btn-danger">
-											<i class="fas fa-sign-out-alt"></i> Cerrar sesión
-										</button>
-									</form>
-								</div>
+							<div class="d-flex">
+								<span class="text-dark">Bienvenido, <strong>{{ user.username }}</strong>!</span>	
+								<!-- Botón de carrito -->
+								<a href="{% url 'ventas:ver_carrito'%}" class="btn btn-sm btn-primary">
+									<i class="fas fa-shopping-cart"></i> Carrito
+								</a>								
+								<!-- Formulario de logout (método POST recomendado) -->
+								<form action="{% url 'logout' %}" method="post" class="d-inline">
+									{% csrf_token %}
+									<button type="submit" class="btn btn-sm btn-danger">
+										<i class="fas fa-sign-out-alt"></i> Cerrar sesión
+									</button>
+								</form>
+							</div>
 						{% else %}
-									<!-- Contenido para invitados -->
-								<div class="d-flex  gap-3">
-										<span class="text-dark">Por favor, inicia sesión</span>
-										<a href="{% url 'login' %}" class="btn btn-sm btn-primary">
-											<i class="fas fa-user-plus"></i> Iniciar sesión
-										</a>
-										<a href="{% url 'registro' %}" class="btn btn-sm btn-primary">
-											<i class="fas fa-user-plus"></i> Registrarse
-										</a>
-								</div>
+								<!-- Contenido para invitados -->
+							<div class="d-flex  gap-3">
+								<span class="text-dark">Por favor, inicia sesión</span>
+								<a href="{% url 'login' %}" class="btn btn-sm btn-primary">
+									<i class="fas fa-user-plus"></i> Iniciar sesión
+								</a>
+								<a href="{% url 'registro' %}" class="btn btn-sm btn-primary">
+									<i class="fas fa-user-plus"></i> Registrarse
+								</a>
+							</div>
 							{% endif %}			
-							
-
-						
 						</div>
 					</div>		
-
 				</div>
 			</div>
-		</div><!--top-content-->
-
-<header id="header">
+		</div>		
+		<header id="header">
 			<div class="container-fluid">
 				<div class="row">	
 					<div class="col-md-12">
 						<nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <!-- Menú principal -->
-        <div class="main-menu stellarnav w-100">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex align-items-center w-100">
-                <li class="nav-item active me-3">
-                    <a href="{% url 'inicio'%}" class="nav-link">Inicio</a>
-                </li>
-				{% if user.is_authenticated %}
+							<div class="container-fluid">
+							<!-- Menú principal -->
+								<div class="main-menu stellarnav w-100">
+									<ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex align-items-center w-100">
+										<li class="nav-item active me-3">
+											<a href="{% url 'inicio'%}" class="nav-link">Inicio</a>
+										</li>
+										{% if user.is_authenticated %}
 
-                <li class="nav-item dropdown me-3">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        Menu Administador
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Perfil</a></li>
-                        <li><a class="dropdown-item" href="{% url 'ventas:lista_pedidos'%}">Reporte Pedidos</a></li>
-                        <li><a class="dropdown-item" href="{% url 'admin:index'%}">Admin</a></li>
-                    </ul>
-                </li>
-				{%endif%}
+										<li class="nav-item dropdown me-3">
+											<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+												Menu
+											</a>
+											<ul class="dropdown-menu">
+												<li><a class="dropdown-item" href="#">Perfil</a></li>
+												{% if user.is_staff %}
+												<li><a class="dropdown-item" href="{% url 'ventas:lista_pedidos'%}">Reporte Pedidos</a></li>
+												<li><a class="dropdown-item" href="{% url 'admin:index'%}">Admin</a></li>
+												{% else%}
+												<li><a class="dropdown-item" href="{% url 'ventas:historial'%}">Historial</a></li>
+												{%endif%}
+											</ul>
+										</li>
+										{%endif%}
 
-				<li class="nav-item me-3">
-                    <a href="{% url 'libros:lista'%}" class="nav-link">Libros</a>
-                </li>
-                <li class="nav-item me-3">
-                    <a href="#" class="nav-link">Ofertas</a>
-                </li>
-                <li class="nav-item me-3">
-                    <a href="#"class="nav-link">Más Vendidos</a>
-                </li>
-                <li class="nav-item me-3">
-                    <a href="#" class="nav-link">Populares</a>
-                </li>
-                <!-- Elemento alineado a la derecha (ejemplo) -->
-                <li class="nav-item ms-auto">
-                    <div class="search-bar ms-auto">  <!-- ms-auto = margin-left: auto -->
-								<form class="d-flex" method="get" action="{% url 'libros:buscar_libros' %}">
-									<input class="form-control me-2" type="search" name="q" placeholder="Buscar libros...">
-									<button class="btn btn-outline-primary" type="submit">Buscar</button>
-								</form>
+										<li class="nav-item me-3">
+											<a href="{% url 'libros:lista'%}" class="nav-link">Libros</a>
+										</li>
+										<li class="nav-item me-3">
+											<a href="{% url 'libros:lista_categorias'%}" class="nav-link">Categorias</a>
+										</li>
+										
+										<!-- Elemento alineado a la derecha (ejemplo) -->
+										<li class="nav-item ms-auto">
+											<div class="search-bar ms-auto">  <!-- ms-auto = margin-left: auto -->
+												<form class="d-flex" method="get" action="{% url 'libros:buscar_libros' %}">
+													<input class="form-control me-2" type="search" name="q" placeholder="Buscar libros...">
+													<button class="btn btn-outline-primary" type="submit">Buscar</button>
+												</form>
+											</div>
+										</li>
+									</ul>
 								</div>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+							</div>
+						</nav>
 
-					</div>
-					<div class="col-md-2">
-						
-					</div>
+					</div>					
 				</div>
 			</div>
 		</header>
-
 	</div><!--header-wrap-->
 </body>

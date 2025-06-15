@@ -3,9 +3,12 @@ from .models import Libro, Reseña
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 import random
+from django.core.paginator import Paginator
+from django.db.models import Count
+
 def detalle_libro(request, libro_id):
     libro = get_object_or_404(Libro, pk=libro_id)
-    reseñas = libro.reseñas.all()  # Obtiene todas las reseñas del libro
+    reseñas = libro.reseñas.all()
     return render(request, 'libros/detalle.html', {'libro': libro, 'reseñas': reseñas})
 def inicio(request):
     
@@ -18,9 +21,16 @@ def inicio(request):
     return render(request, 'libros/inicio.html', { 'libro': libro, 'libros_filtrados':libros_filtrados})
 
 
+
 def lista_libros(request):
-    libros = Libro.objects.all()
+    libros_list = Libro.objects.all()  # O tu queryset actual
+    paginator = Paginator(libros_list, 9)  # Muestra 9 libros por página
+    page_number = request.GET.get('page')
+    libros = paginator.get_page(page_number)
+    
     return render(request, 'libros/lista.html', {'libros': libros})
+
+
 def buscar_libros(request):
     query = request.GET.get('q', '')  # Obtiene el parámetro de búsqueda (ej: ?q=harry+potter)
     
@@ -54,3 +64,22 @@ def agregar_reseña(request, libro_id):
         )
         return redirect('detalle_libro', libro_id=libro.id)
     return redirect('inicio')
+
+
+def lista_categorias(request):
+    # Obtener categorías distintas con conteo de libros
+    categorias = Libro.objects.values('categoria').annotate(
+        total=Count('id')
+    ).order_by('categoria')
+    
+    return render(request, 'libros/lista_categorias.html', {
+        'categorias': categorias
+    })
+
+# views.py
+def por_categoria(request, categoria):
+    libros = Libro.objects.filter(categoria__iexact=categoria.replace('-', ' ')).order_by('titulo')
+    return render(request, 'libros/lista_libros_categoria.html', {
+        'categoria_actual': categoria.replace('-', ' '),
+        'libros': libros
+    })

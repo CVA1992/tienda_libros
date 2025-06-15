@@ -97,6 +97,8 @@ from django.shortcuts import get_object_or_404
 def detalle_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id, usuario=request.user)  # Filtra por usuario para seguridad
     items_pedido = pedido.items.all().select_related('libro')  # Accede a los items mediante related_name
-    
-   
     return render(request, 'ventas/detalle_pedido.html', {'pedido': pedido, 'items_pedido':items_pedido})
+@login_required
+def historial(request):
+    pedidos = Pedido.objects.filter(usuario=request.user)
+    return render(request,'ventas/historial.html',{'pedidos':pedidos})

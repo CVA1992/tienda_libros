@@ -23,7 +23,7 @@ class Libro(models.Model):
 
 class Reseña(models.Model):
     libro = models.ForeignKey(Libro, on_delete=models.CASCADE, related_name='reseñas')
-    usuario = models.ForeignKey(PerfilUsuario, on_delete=models.CASCADE)  # User por defecto
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     comentario = models.TextField()
     puntuacion = models.PositiveIntegerField(choices=[(1, '★'), (2, '★★'), (3, '★★★'), (4, '★★★★'), (5, '★★★★★')])
     fecha = models.DateTimeField(auto_now_add=True)

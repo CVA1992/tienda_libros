@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'libros:lista_categorias' %}">Todas las categorías</a></li>
+            <li class="breadcrumb-item active">{{ categoria_actual|title }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Libros en {{ categoria_actual|title }}</h2>
+        <a href="{% url 'libros:lista_categorias' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    {% if libros %}
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for libro in libros %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if libro.portada %}
+                <img src="{{ libro.portada.url }}" class="card-img-top" alt="{{ libro.titulo }}" style="height: 200px; object-fit: contain;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ libro.titulo }}</h5>
+                    <img src="{{libro.imagen}}">
+                    <p class="card-text text-muted">{{ libro.autor }}</p>
+                    <p class="text-success fw-bold">${{ libro.precio }}</p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{% url 'libros:detalle_libro' libro.id %}" class="btn btn-sm btn-primary w-100">
+                        Ver detalle
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-warning">
+        No hay libros en la categoría "{{ categoria_actual|title }}"
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

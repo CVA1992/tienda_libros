@@ -1,17 +1,33 @@
 {% extends 'base/base.html' %}
 {% block content %}
 <div class="container mt-5">
+    <div class = "row">
+        <div class = " col-md-8">
+        <h1 class="mb-3">{{ libro.titulo }}</h1>
+        </div>
+        <div class = "col-md-4">
+            <form action="{% url 'ventas:agregar_al_carrito' libro.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3" style="max-width: 200px;">
+                        <input type="number" name="cantidad" value="1" min="1" class="form-control">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-cart-plus"></i> Añadir al carrito
+                        </button>
+                    </div>
+            </form>
+        </div>
+    </div>
     <div class="row">
         <!-- Columna para la imagen -->
-        <div class="col-md-6 mb-4">
+        <div class="col-md-3 mb-4">
             <div class="card">
                 <img src="{{ libro.imagen }}" class="card-img-top img-fluid" alt="{{ libro.titulo }}">
             </div>
         </div>
         
         <!-- Columna para la información del libro -->
-        <div class="col-md-6">
-            <h1 class="mb-3">{{ libro.titulo }}</h1>
+        <div class="col-md-8">
+            
             
             <div class="card mb-3">
                 <div class="card-body">
@@ -27,40 +43,59 @@
                 <p>{{ libro.autor }}</p>
             </div>
             {% endif %}
-            
-            {% if libro.fecha_publicacion %}
-            <div class="mb-3">
-                <h5>Fecha de publicación:</h5>
-                <p>{{ libro.fecha_publicacion }}</p>
+        </div>   
+    </div>
+
+    <!-- reseñas -->
+     {% for reseña in reseñas%}
+     <div class="row mb-4 border rounded p-3">
+        <!-- Columna principal (8/12) para la reseña -->
+        <div class="col-md-8">
+            <p class="mb-2">{{ reseña.comentario }}</p>
+            <small class="text-muted">{{ reseña.fecha|date:"d M Y" }}</small>
+        </div>
+        
+        <!-- Columna secundaria (4/12) dividida en dos filas -->
+        <div class="col-md-4">
+            <!-- Fila superior: Usuario -->
+            <div class="row mb-2">
+                <div class="col-12 d-flex align-items-center">
+                    <strong>{{ reseña.usuario }}</strong>
+                </div>
             </div>
-            {% endif %}
             
-            <!-- Botón de volver atrás -->
+            <!-- Fila inferior: Puntuación -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex align-items-center">
+                        <span class="me-2">Puntuación:</span>
+                        <div class="star-rating">
+                            {% for i in "12345" %}
+                            {% if forloop.counter <= reseña.puntuacion %}
+                            <i class="bi bi-star-fill text-warning"></i>
+                            {% else %}
+                            <i class="bi bi-star text-warning"></i>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="ms-2">{{ reseña.puntuacion }}/5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-info">No hay reseñas disponibles</div>
+    {% endfor %}
+    
+   <!-- boton volver-->
+    <div class="row justify-content-end">
+        <div class="col-auto">  <!-- "col-auto" para que solo ocupe el ancho necesario -->
             <a href="javascript:history.back()" class="btn btn-primary mt-3">
                 <i class="bi bi-arrow-left"></i> Volver
             </a>
         </div>
-        <div class="col">
-              <ul>
-            {% for resen in reseñas  %}
-                <li> {{resen.comentario}}<br>
-                    {{resen.usuario}}
-
-                </li>
-
-            
-            {% endfor %}
-            </ul>
-        </div>
     </div>
-     <form action="{% url 'ventas:agregar_al_carrito' libro.id %}" method="post">
-                {% csrf_token %}
-                <div class="input-group mb-3" style="max-width: 200px;">
-                    <input type="number" name="cantidad" value="1" min="1" class="form-control">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-cart-plus"></i> Añadir al carrito
-                    </button>
-                </div>
-            </form>
-</div>
+</div>  
+    
 {% endblock %}
