@@ -23,16 +23,18 @@
             <div class="card">
                 <img src="{{ libro.imagen }}" class="card-img-top img-fluid" alt="{{ libro.titulo }}">
             </div>
-        </div>
+    </div>
         
         <!-- Columna para la información del libro -->
-        <div class="col-md-8">
+    <div class="col-md-8">
             
             
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Descripción</h5>
-                    <p class="card-text">{{ libro.descripcion }}</p>
+                    <div style="max-height: 150px; overflow-y: auto;">
+                        <p class="card-text">{{ libro.descripcion }}</p>
+                    </div>
                 </div>
             </div>
             
@@ -47,48 +49,89 @@
     </div>
 
     <!-- reseñas -->
-     {% for reseña in reseñas%}
-     <div class="row mb-4 border rounded p-3">
-        <!-- Columna principal (8/12) para la reseña -->
-        <div class="col-md-8">
-            <p class="mb-2">{{ reseña.comentario }}</p>
-            <small class="text-muted">{{ reseña.fecha|date:"d M Y" }}</small>
-        </div>
-        
-        <!-- Columna secundaria (4/12) dividida en dos filas -->
-        <div class="col-md-4">
-            <!-- Fila superior: Usuario -->
-            <div class="row mb-2">
-                <div class="col-12 d-flex align-items-center">
-                    <strong>{{ reseña.usuario }}</strong>
-                </div>
+    {% for reseña in libro.reseñas.all %}
+<div class="card mb-3">
+    <div class="card-body">
+        {% if reseña_editando and reseña_editando.id == reseña.id %}
+        <!-- Formulario de edición -->
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="reseña_id" value="{{ reseña.id }}">
+            <div class="mb-3">
+                <label class="form-label">Puntuación</label>
+                <select name="puntuacion" class="form-select">
+                    {% for value, text in reseña_form.fields.puntuacion.choices %}
+                    <option value="{{ value }}" {% if value == reseña.puntuacion %}selected{% endif %}>{{ text }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Comentario</label>
+                <textarea name="comentario" class="form-control" rows="3">{{ reseña.comentario }}</textarea>
+            </div>
+            <button type="submit" name="editar_reseña" class="btn btn-primary btn-sm">Guardar</button>
+            <a href="?cancelar_edicion=true" class="btn btn-secondary btn-sm">Cancelar</a>
+        </form>
+        {% else %}
+        <!-- Visualización normal -->
+        <h5 class="card-title">
+            {{ reseña.usuario.username }} - {{ reseña.get_puntuacion_display }}
+            {% if user == reseña.usuario %}
+            <div class="float-end">
+                <a href="?editar_reseña={{ reseña.id }}" class="btn btn-sm btn-outline-primary">Editar</a>
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="reseña_id" value="{{ reseña.id }}">
+                    <button type="submit" name="eliminar_reseña" class="btn btn-sm btn-outline-danger" 
+                            onclick="return confirm('¿Estás seguro de querer eliminar esta reseña?')">
+                        Eliminar
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </h5>
+        <p class="card-text">{{ reseña.comentario }}</p>
+        <p class="text-muted"><small>{{ reseña.fecha }}</small></p>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+    
+   
+
+    <!-- formulario añadir reseñas-->
+    <!-- Formulario para añadir reseña -->
+{% if user.is_authenticated %}
+<div class="card mt-4">
+    <div class="card-body">
+        <h5>Añadir reseña</h5>
+        <form method="POST" action="{% url 'libros:detalle_libro' libro.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="añadir_reseña" value="1">
+            
+            <div class="mb-3">
+                <label class="form-label">Puntuación</label>
+                <select name="puntuacion" class="form-select" required>
+                    <option value="">Selecciona...</option>
+                    <option value="1">★</option>
+                    <option value="2">★★</option>
+                    <option value="3">★★★</option>
+                    <option value="4">★★★★</option>
+                    <option value="5">★★★★★</option>
+                </select>
             </div>
             
-            <!-- Fila inferior: Puntuación -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="d-flex align-items-center">
-                        <span class="me-2">Puntuación:</span>
-                        <div class="star-rating">
-                            {% for i in "12345" %}
-                            {% if forloop.counter <= reseña.puntuacion %}
-                            <i class="bi bi-star-fill text-warning"></i>
-                            {% else %}
-                            <i class="bi bi-star text-warning"></i>
-                            {% endif %}
-                            {% endfor %}
-                        </div>
-                        <span class="ms-2">{{ reseña.puntuacion }}/5</span>
-                    </div>
-                </div>
+            <div class="mb-3">
+                <label class="form-label">Comentario</label>
+                <textarea name="comentario" class="form-control" rows="3" required></textarea>
             </div>
-        </div>
+            
+            <button type="submit" class="btn btn-primary">Enviar reseña</button>
+        </form>
     </div>
-    {% empty %}
-    <div class="alert alert-info">No hay reseñas disponibles</div>
-    {% endfor %}
-    
-   <!-- boton volver-->
+</div>
+{% endif %}
+    <!-- boton volver-->
     <div class="row justify-content-end">
         <div class="col-auto">  <!-- "col-auto" para que solo ocupe el ancho necesario -->
             <a href="javascript:history.back()" class="btn btn-primary mt-3">
@@ -98,4 +141,9 @@
     </div>
 </div>  
     
+
+
+
+
+
 {% endblock %}
