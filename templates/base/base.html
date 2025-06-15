@@ -2,16 +2,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    {% include "base/includes/head.html" %}  <!-- Ruta correcta -->
+    {% include "base/includes/head.html" %}
     {% block extra_head %}{% endblock %}
 </head>
 <body>
-    {% include "base/includes/header.html" %}  <!-- Ruta correcta -->
+    {% include "base/includes/header.html" %}
     
-    {%block content%}
-    {%endblock%}
-    {% include "base/includes/footer.html" %}  <!-- Ruta correcta -->
-    {% include "base/includes/scripts.html" %} <!-- Ruta correcta -->
+    <main role="main" class="container my-4">
+        {% block content %}{% endblock %}
+    </main>
+    
+    {% include "base/includes/footer.html" %}
+    {% include "base/includes/scripts.html" %}
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>
