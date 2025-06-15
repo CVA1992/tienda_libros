@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = 'Importa libros desde la API de Google Books'
 
     def add_arguments(self, parser):
-        parser.add_argument('--query', type=str, default='django', help='Término de búsqueda')
+        parser.add_argument('--query', type=str, default='web', help='Término de búsqueda')
 
     def handle(self, *args, **options):
         query = options['query']
