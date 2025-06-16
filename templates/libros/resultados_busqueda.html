@@ -1,30 +1,47 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<div class="container mt-3">
+<div class="container mt-4">
+
     <form method="get" action="{% url 'libros:buscar_libros' %}" class="mb-4">
         <div class="input-group">
-            <input type="text" name="q" class="form-control" 
-                   placeholder="Buscar libros..." value="{{ query }}">
-            <button type="submit" class="btn btn-primary">Buscar</button>
+            <input 
+                type="search" 
+                name="q" 
+                class="form-control" 
+                placeholder="Buscar libros..." 
+                value="{{ query|default:'' }}" 
+                aria-label="Buscar libros"
+                autofocus
+                autocomplete="off"
+            >
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Buscar
+            </button>
         </div>
     </form>
 
-    <h2 class="mb-3">Resultados para: "{{ query }}"</h2>
+    <h2 class="mb-3">Resultados para: <mark>{{ query }}</mark></h2>
 
     {% if libros %}
-    <div class="list-group">
+    <div class="list-group shadow-sm">
         {% for libro in libros %}
-        <a href="{% url 'libros:detalle_libro' libro.id %}" class="list-group-item list-group-item-action">
-            <div class="d-flex w-100 justify-content-between">
+        <a href="{% url 'libros:detalle_libro' libro.id %}" class="list-group-item list-group-item-action d-flex flex-column flex-md-row justify-content-between align-items-start">
+            <div class="me-md-3 flex-grow-1">
                 <h5 class="mb-1">{{ libro.titulo }}</h5>
-                <small>Autor: {{ libro.autor.nombre }}</small>
+                <small class="text-muted">Autor: {{ libro.autor.nombre }}</small>
+                <p class="mb-1 mt-2 text-truncate" style="max-width: 600px;">{{ libro.descripcion|truncatechars:120 }}</p>
             </div>
-            <p class="mb-1">{{ libro.descripcion|truncatechars:100 }}</p>
+            <small class="text-primary fw-bold fs-5">${{ libro.precio }}</small>
         </a>
         {% endfor %}
     </div>
     {% elif query %}
-    <div class="alert alert-info">No se encontraron resultados.</div>
+    <div class="alert alert-warning" role="alert">
+        No se encontraron resultados para "<strong>{{ query }}</strong>".
+    </div>
+    {% else %}
+    <p class="text-muted">Introduce un término para buscar libros.</p>
     {% endif %}
+
 </div>
 {% endblock %}
