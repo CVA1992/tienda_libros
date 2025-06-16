@@ -1,37 +1,41 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
+<div class="container mt-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-light rounded p-2 shadow-sm">
             <li class="breadcrumb-item"><a href="{% url 'libros:lista_categorias' %}">Todas las categorías</a></li>
-            <li class="breadcrumb-item active">{{ categoria_actual|title }}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ categoria_actual|title }}</li>
         </ol>
     </nav>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Libros en {{ categoria_actual|title }}</h2>
-        <a href="{% url 'libros:lista_categorias' %}" class="btn btn-outline-secondary">
+        <h2 class="fw-bold text-primary">Libros en {{ categoria_actual|title }}</h2>
+        <a href="{% url 'libros:lista_categorias' %}" class="btn btn-outline-primary">
             <i class="bi bi-arrow-left"></i> Volver
         </a>
     </div>
 
     {% if libros %}
-    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         {% for libro in libros %}
         <div class="col">
-            <div class="card h-100 shadow-sm">
-                {% if libro.portada %}
-                <img src="{{ libro.portada.url }}" class="card-img-top" alt="{{ libro.titulo }}" style="height: 200px; object-fit: contain;">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ libro.titulo }}</h5>
-                    <img src="{{libro.imagen}}">
-                    <p class="card-text text-muted">{{ libro.autor }}</p>
-                    <p class="text-success fw-bold">${{ libro.precio }}</p>
+            <div class="card h-100 shadow-sm border-0 rounded-3">
+                {% if libro.imagen %}
+                    <img src="{{ libro.imagen}}" alt="{{ libro.titulo }}" class="img-fluid rounded shadow" style="max-height: 200px;">
+                    {% endif %}
+                {% if not libro.imagen %}       
+                <div class="d-flex align-items-center justify-content-center bg-secondary text-white" style="height: 250px;">
+                    Sin imagen
                 </div>
-                <div class="card-footer bg-transparent border-top-0">
-                    <a href="{% url 'libros:detalle_libro' libro.id %}" class="btn btn-sm btn-primary w-100">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-truncate" title="{{ libro.titulo }}">{{ libro.titulo }}</h5>
+                    <p class="card-text text-muted mb-2" style="flex-grow: 1;">{{ libro.autor }}</p>
+                    <p class="text-success fw-bold fs-5">${{ libro.precio }}</p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0 px-3 pb-3 pt-0">
+                    <a href="{% url 'libros:detalle_libro' libro.id %}" class="btn btn-primary w-100 fw-semibold">
                         Ver detalle
                     </a>
                 </div>
@@ -40,7 +44,7 @@
         {% endfor %}
     </div>
     {% else %}
-    <div class="alert alert-warning">
+    <div class="alert alert-warning text-center fs-5">
         No hay libros en la categoría "{{ categoria_actual|title }}"
     </div>
     {% endif %}
