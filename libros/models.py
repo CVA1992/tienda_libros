@@ -30,3 +30,4 @@ class Reseña(models.Model):
 
     def __str__(self):
         return f"Reseña de {self.usuario} para {self.libro}"
+    

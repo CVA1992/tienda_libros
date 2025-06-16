@@ -1,35 +1,35 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<div class="container mt-5">
-    <div class = "row">
-        <div class = " col-md-8">
-        <h1 class="mb-3">{{ libro.titulo }}</h1>
+<div class="container my-5">
+
+    <!-- Título y botón añadir al carrito -->
+    <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+            <h1 class="fw-bold">{{ libro.titulo }}</h1>
         </div>
-        <div class = "col-md-4">
-            <form action="{% url 'ventas:agregar_al_carrito' libro.id %}" method="post">
-                    {% csrf_token %}
-                    <div class="input-group mb-3" style="max-width: 200px;">
-                        <input type="number" name="cantidad" value="1" min="1" class="form-control">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-cart-plus"></i> Añadir al carrito
-                        </button>
-                    </div>
+        <div class="col-md-4 text-md-end">
+            <form action="{% url 'ventas:agregar_al_carrito' libro.id %}" method="post" class="d-inline-block">
+                {% csrf_token %}
+                <div class="input-group" style="max-width: 220px; margin-left: auto;">
+                    <input type="number" name="cantidad" value="1" min="1" class="form-control">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-cart-plus"></i> Añadir
+                    </button>
+                </div>
             </form>
         </div>
     </div>
-    <div class="row">
-        <!-- Columna para la imagen -->
-        <div class="col-md-3 mb-4">
-            <div class="card">
-                <img src="{{ libro.imagen }}" class="card-img-top img-fluid" alt="{{ libro.titulo }}">
+
+    <!-- Imagen y descripción -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <img src="{{ libro.imagen }}" class="card-img-top img-fluid rounded" alt="{{ libro.titulo }}">
             </div>
-    </div>
-        
-        <!-- Columna para la información del libro -->
-    <div class="col-md-8">
-            
-            
-            <div class="card mb-3">
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Descripción</h5>
                     <div style="max-height: 150px; overflow-y: auto;">
@@ -37,113 +37,110 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Puedes añadir más detalles del libro aquí -->
+
             {% if libro.autor %}
-            <div class="mb-3">
-                <h5>Autor:</h5>
-                <p>{{ libro.autor }}</p>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-1">Autor</h5>
+                    <p class="card-text">{{ libro.autor }}</p>
+                </div>
             </div>
             {% endif %}
-        </div>   
-    </div>
-
-    <!-- reseñas -->
-    {% for reseña in libro.reseñas.all %}
-<div class="card mb-3">
-    <div class="card-body">
-        {% if reseña_editando and reseña_editando.id == reseña.id %}
-        <!-- Formulario de edición -->
-        <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="reseña_id" value="{{ reseña.id }}">
-            <div class="mb-3">
-                <label class="form-label">Puntuación</label>
-                <select name="puntuacion" class="form-select">
-                    {% for value, text in reseña_form.fields.puntuacion.choices %}
-                    <option value="{{ value }}" {% if value == reseña.puntuacion %}selected{% endif %}>{{ text }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Comentario</label>
-                <textarea name="comentario" class="form-control" rows="3">{{ reseña.comentario }}</textarea>
-            </div>
-            <button type="submit" name="editar_reseña" class="btn btn-primary btn-sm">Guardar</button>
-            <a href="?cancelar_edicion=true" class="btn btn-secondary btn-sm">Cancelar</a>
-        </form>
-        {% else %}
-        <!-- Visualización normal -->
-        <h5 class="card-title">
-            {{ reseña.usuario.username }} - {{ reseña.get_puntuacion_display }}
-            {% if user == reseña.usuario %}
-            <div class="float-end">
-                <a href="?editar_reseña={{ reseña.id }}" class="btn btn-sm btn-outline-primary">Editar</a>
-                <form method="post" style="display: inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="reseña_id" value="{{ reseña.id }}">
-                    <button type="submit" name="eliminar_reseña" class="btn btn-sm btn-outline-danger" 
-                            onclick="return confirm('¿Estás seguro de querer eliminar esta reseña?')">
-                        Eliminar
-                    </button>
-                </form>
-            </div>
-            {% endif %}
-        </h5>
-        <p class="card-text">{{ reseña.comentario }}</p>
-        <p class="text-muted"><small>{{ reseña.fecha }}</small></p>
-        {% endif %}
-    </div>
-</div>
-{% endfor %}
-    
-   
-
-    <!-- formulario añadir reseñas-->
-    <!-- Formulario para añadir reseña -->
-{% if user.is_authenticated %}
-<div class="card mt-4">
-    <div class="card-body">
-        <h5>Añadir reseña</h5>
-        <form method="POST" action="{% url 'libros:detalle_libro' libro.id %}">
-            {% csrf_token %}
-            <input type="hidden" name="añadir_reseña" value="1">
-            
-            <div class="mb-3">
-                <label class="form-label">Puntuación</label>
-                <select name="puntuacion" class="form-select" required>
-                    <option value="">Selecciona...</option>
-                    <option value="1">★</option>
-                    <option value="2">★★</option>
-                    <option value="3">★★★</option>
-                    <option value="4">★★★★</option>
-                    <option value="5">★★★★★</option>
-                </select>
-            </div>
-            
-            <div class="mb-3">
-                <label class="form-label">Comentario</label>
-                <textarea name="comentario" class="form-control" rows="3" required></textarea>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Enviar reseña</button>
-        </form>
-    </div>
-</div>
-{% endif %}
-    <!-- boton volver-->
-    <div class="row justify-content-end">
-        <div class="col-auto">  <!-- "col-auto" para que solo ocupe el ancho necesario -->
-            <a href="javascript:history.back()" class="btn btn-primary mt-3">
-                <i class="bi bi-arrow-left"></i> Volver
-            </a>
         </div>
     </div>
-</div>  
-    
 
+    <!-- Reseñas -->
+    <h3 class="mb-3">Reseñas</h3>
 
+    {% for reseña in libro.reseñas.all %}
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            {% if reseña_editando and reseña_editando.id == reseña.id %}
+            <!-- Formulario de edición -->
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="reseña_id" value="{{ reseña.id }}">
 
+                <div class="mb-3">
+                    <label class="form-label">Puntuación</label>
+                    <select name="puntuacion" class="form-select">
+                        {% for value, text in reseña_form.fields.puntuacion.choices %}
+                        <option value="{{ value }}" {% if value == reseña.puntuacion %}selected{% endif %}>{{ text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
+                <div class="mb-3">
+                    <label class="form-label">Comentario</label>
+                    <textarea name="comentario" class="form-control" rows="3">{{ reseña.comentario }}</textarea>
+                </div>
 
+                <button type="submit" name="editar_reseña" class="btn btn-sm btn-success me-2">Guardar</button>
+                <a href="?cancelar_edicion=true" class="btn btn-sm btn-secondary">Cancelar</a>
+            </form>
+            {% else %}
+            <!-- Visualización -->
+            <h5 class="card-title d-flex justify-content-between">
+                {{ reseña.usuario.username }} - {{ reseña.get_puntuacion_display }}
+                {% if user == reseña.usuario %}
+                <div>
+                    <a href="?editar_reseña={{ reseña.id }}" class="btn btn-sm btn-outline-primary me-1">Editar</a>
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="reseña_id" value="{{ reseña.id }}">
+                        <button type="submit" name="eliminar_reseña" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('¿Estás seguro de querer eliminar esta reseña?')">Eliminar</button>
+                    </form>
+                </div>
+                {% endif %}
+            </h5>
+            <p class="card-text">{{ reseña.comentario }}</p>
+            <p class="text-muted mb-0"><small>{{ reseña.fecha }}</small></p>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-muted">No hay reseñas todavía.</p>
+    {% endfor %}
+
+    <!-- Añadir nueva reseña -->
+    {% if user.is_authenticated %}
+    <div class="card mt-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Añadir reseña</h5>
+            <form method="POST" action="{% url 'libros:detalle_libro' libro.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="añadir_reseña" value="1">
+
+                <div class="mb-3">
+                    <label class="form-label">Puntuación</label>
+                    <select name="puntuacion" class="form-select" required>
+                        <option value="">Selecciona...</option>
+                        <option value="1">★</option>
+                        <option value="2">★★</option>
+                        <option value="3">★★★</option>
+                        <option value="4">★★★★</option>
+                        <option value="5">★★★★★</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Comentario</label>
+                    <textarea name="comentario" class="form-control" rows="3" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Enviar reseña</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Botón volver -->
+    <div class="text-end mt-4">
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+
+</div>
 {% endblock %}

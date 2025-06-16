@@ -104,13 +104,26 @@ def detalle_libro(request, libro_id):
 
 
 
+import random
+
 def inicio(request):
-   
     libros_filtrados = Libro.objects.filter(stock__lt=8).order_by('stock')[:8]
 
-    libros = Libro.objects.all()
+    libros = list(Libro.objects.all())
     libro = random.choice(libros) if libros else None
-    return render(request, 'libros/inicio.html', { 'libro': libro, 'libros_filtrados':libros_filtrados})
+
+    # Elegir un segundo libro diferente al primero
+    libro2 = None
+    if libro:
+        otros_libros = [l for l in libros if l.id != libro.id]
+        if otros_libros:
+            libro2 = random.choice(otros_libros)
+
+    return render(request, 'libros/inicio.html', {
+        'libro': libro,
+        'libro2': libro2,
+        'libros_filtrados': libros_filtrados,
+    })
 
 
 

@@ -1,61 +1,86 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block content %}
-	<section id="billboard">
+<section id="billboard" class="py-5 bg-light">
+    <div class="container">
 
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
+        {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
-					{% if messages %}
-					<div class="messages-container">
-						{% for message in messages %}
-						<div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-							{{ message }}
-							<button type="button" class="close" data-dismiss="alert">
-							<span>&times;</span>
-							</button>
+        <!-- Carousel/slider usando Bootstrap 5 -->
+        <div id="libroCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner rounded shadow-sm overflow-hidden">
+
+                <!-- Item 1: Portada del libro -->
+                <div class="carousel-item active">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 text-center text-md-start p-4">
+                            <h2 class="display-5 fw-bold">{{ libro.titulo }}</h2>
+                            {% if libro.descripcion %}
+                            <p class="lead text-secondary">{{ libro.descripcion|truncatewords:30 }}</p>
+                            {% endif %}
+                            <a href="{% url 'libros:detalle_libro' libro.id %}" class="btn btn-primary btn-lg mt-3">
+                                Leer más <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                        <div class="col-md-6 text-center p-4">
+                            {% if libro.imagen %}
+                            <img src="{{ libro.imagen }}" alt="{{ libro.titulo }}" class="img-fluid rounded shadow" style="max-height: 350px;">
+                            {% else %}
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 350px;">
+                                Sin imagen disponible
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2: Texto adicional o destacado -->
+				<div class="carousel-item">
+					<div class="row align-items-center">
+						<div class="col-md-6 text-center text-md-start p-4">
+							<h2 class="display-5 fw-bold">{{ libro2.titulo }}</h2>
+							{% if libro2.descripcion %}
+							<p class="lead text-secondary">{{ libro2.descripcion|truncatewords:30 }}</p>
+							{% endif %}
+							<a href="{% url 'libros:detalle_libro' libro2.id %}" class="btn btn-primary btn-lg mt-3">
+								Leer más <i class="bi bi-arrow-right ms-2"></i>
+							</a>
 						</div>
-						{% endfor %}
+						<div class="col-md-6 text-center p-4">
+							{% if libro2.imagen %}
+							<img src="{{ libro2.imagen }}" alt="{{ libro2.titulo }}" class="img-fluid rounded shadow" style="max-height: 350px;">
+							{% else %}
+							<div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 350px;">
+								Sin imagen disponible
+							</div>
+							{% endif %}
+						</div>
 					</div>
-					{% endif %}
-					<div class="main-slider pattern-overlay">
-						<div class="slider-item">
-							<div class="banner-content">
-								<h2 class="banner-title">{{libro.titulo}}</h2>
-								
-								<div class="btn-wrap">
-									
-									<a href="#" class="btn btn-outline-accent btn-accent-arrow">Read More<i
-											class="icon icon-ns-arrow-right"></i>
-									</a>
-								</div>
-							</div><!--banner-content-->
-							<img src="{{libro.imagen}}" alt="banner" class="banner-image">
-						</div><!--slider-item-->
-
-						<div class="slider-item">
-							<div class="banner-content">
-								<h2 class="banner-title">Birds gonna be Happy</h2>
-								<p>{{libro.descripcion}}</p>
-								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero
-									ipsum enim pharetra hac. Urna commodo, lacus ut magna velit eleifend. Amet, quis
-									urna, a eu.</p>
-								
-							</div><!--banner-content-->
-							
-						</div><!--slider-item-->
-
-					</div><!--slider-->
-
-					
-
 				</div>
-			</div>
-		</div>
 
-	</section>
-	
+            </div>
 
-	
+            <!-- Controles -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#libroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#libroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        </div>
+
+    </div>
+</section>
 {% endblock %}

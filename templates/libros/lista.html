@@ -1,33 +1,56 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<div class="container">
-    <!-- Lista de libros -->
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">📚 Libros Disponibles</h2>
+
     {% for libro in libros %}
-    <div class="row mb-3 border-bottom pb-3">
-        
-        <div class="col-md-3 col-4">
-            <a href="{% url 'libros:detalle_libro' libro.id %}">
-            <img src="{{ libro.imagen }}" class="img-fluid" alt="{{ libro.titulo }}">
-            </a>
-        </div>
-        
-        <div class="col-md-9 col-8">
-            <h4>{{ libro.titulo }}</h4>
-            <p class="text-primary">${{ libro.precio }}</p>
-            {% if libro.descripcion %}
-            <p>{{ libro.descripcion|truncatechars:500 }}</p>
-            {% endif %}
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="row g-0">
+            <div class="col-md-3 col-4">
+                <a href="{% url 'libros:detalle_libro' libro.id %}">
+                    <img src="{{ libro.imagen }}" class="img-fluid rounded-start" alt="{{ libro.titulo }}">
+                </a>
+            </div>
+            <div class="col-md-9 col-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ libro.titulo }}</h5>
+
+                    <!-- Fecha de publicación -->
+                    {% if libro.fecha_publicacion %}
+                    <p class="text-muted mb-1">
+                        Publicado: {{ libro.fecha_publicacion|date:"F Y" }}
+                    </p>
+                    {% endif %}
+
+                    <!-- Puntuación promedio -->
+                    {% if libro.promedio_puntuacion %}
+                    <p class="mb-1">
+                        ⭐ {{ libro.promedio_puntuacion|floatformat:1 }}/5
+                    </p>
+                    {% endif %}
+
+                    <p class="text-primary fw-semibold">${{ libro.precio }}</p>
+
+                    {% if libro.descripcion %}
+                    <p class="card-text text-muted">{{ libro.descripcion|truncatechars:300 }}</p>
+                    {% endif %}
+
+                    <a href="{% url 'libros:detalle_libro' libro.id %}" class="btn btn-outline-primary btn-sm mt-2">
+                        Ver más
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
     {% endfor %}
 
     <!-- Paginación -->
     {% if libros.has_other_pages %}
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
+    <nav aria-label="Paginación">
+        <ul class="pagination justify-content-center mt-4">
             {% if libros.has_previous %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ libros.previous_page_number }}" aria-label="Previous">
+                <a class="page-link" href="?page={{ libros.previous_page_number }}" aria-label="Anterior">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -38,16 +61,14 @@
             {% endif %}
 
             {% for i in libros.paginator.page_range %}
-            {% if libros.number == i %}
-            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-            {% else %}
-            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-            {% endif %}
+            <li class="page-item {% if libros.number == i %}active{% endif %}">
+                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+            </li>
             {% endfor %}
 
             {% if libros.has_next %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ libros.next_page_number }}" aria-label="Next">
+                <a class="page-link" href="?page={{ libros.next_page_number }}" aria-label="Siguiente">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
@@ -59,5 +80,22 @@
         </ul>
     </nav>
     {% endif %}
+    {% with libro.promedio_puntuacion as prom %}
+    {% if prom > 0 %}
+    <p class="mb-1 text-warning">
+        {% for i in "12345" %}
+            {% if forloop.counter <= prom %}
+                ★
+            {% else %}
+                ☆
+            {% endif %}
+        {% endfor %}
+        <span class="text-muted small">({{ prom|floatformat:1 }}/5)</span>
+    </p>
+    {% else %}
+    <p class="text-muted small">Sin puntuaciones aún</p>
+    {% endif %}
+{% endwith %}
+
 </div>
 {% endblock %}
